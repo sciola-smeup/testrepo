@@ -1,0 +1,45 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    container: nodered/node-red:3.1.0-18-minimal
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install flow dependencies
+      run: |
+        npm i node-red-node-sqlite
+        npm i node-red-contrib-full-msg-json-schema-validation
+        npm i node-red-contrib-fs
+        npm i node-red-contrib-fs-ops
+        npm i node-red-contrib-cron-plus
+        npm i node-red-contrib-cpu
+        npm i node-red-contrib-os
+        npm i @objectif-lune/node-red-contrib-files-and-folders
+    - name: Install project dependencies
+      run: |
+        apk add wget
+        apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+        python3 -m ensurepip
+        pip3 install --no-cache --upgrade pip setuptools
+        pip install gdown
+    - name: Create project subfolders
+      run: |
+        mkdir -p /home/pi/Downloads/google-drive-upload/downloads
+        mkdir -p /home/pi/Downloads/google-drive-upload/explodedZip
+        mkdir -p /home/pi/Immagini
+        mkdir -p /home/pi/Video
+        mkdir -p /home/pi/Documenti
+    - name: Copy flow in 
+      run: |
+        ls -al
+        
